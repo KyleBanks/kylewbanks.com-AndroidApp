@@ -55,13 +55,6 @@ public class PostActivity extends Activity {
         WebSettings settings = contentView.getSettings();
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         settings.setJavaScriptEnabled(true);
-        contentView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                Log.i(TAG, consoleMessage.toString());
-                return super.onConsoleMessage(consoleMessage);
-            }
-        });
         contentView.loadData(getTemplateContent().replace("{{CONTENT}}", post.getURLEncodedBody()), "text/html", "UTF-8");
     }
 
