@@ -24,7 +24,7 @@ public class KWBApplication  extends Application {
 
     public void loadPostList() {
         Log.i(TAG, "Loading Post List....");
-        
+
         RESTController.retrievePostList(new PostListResponse() {
             @Override
             public void success(String json) {

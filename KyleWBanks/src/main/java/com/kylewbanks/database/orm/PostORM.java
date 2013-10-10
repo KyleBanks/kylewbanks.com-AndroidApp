@@ -54,16 +54,10 @@ public class PostORM {
     public static final String SQL_DROP_TABLE =
             "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-    private SQLiteDatabase _database;
-
     private SimpleDateFormat _dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
 
     public PostORM() {
-        _database = null;
-    }
 
-    public PostORM(SQLiteDatabase database) {
-        _database = database;
     }
 
     public ContentValues postToContentValues(Post post) {
