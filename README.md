@@ -11,4 +11,4 @@ TODO
 
 - Cache the posts on a client side database
 - Only load posts newer than the cached ones
-- Better styling of the posts (PrettyPrint, etc.)
+- Get prettyprint to work from the local file, rather than remote
