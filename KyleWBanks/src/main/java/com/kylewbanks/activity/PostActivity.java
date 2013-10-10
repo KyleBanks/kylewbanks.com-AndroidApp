@@ -7,6 +7,8 @@ import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.webkit.ConsoleMessage;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import com.kylewbanks.KWBApplication;
@@ -50,7 +52,16 @@ public class PostActivity extends Activity {
 
         //Get references to needed UI components
         contentView = (WebView) findViewById(R.id.post_content);
-        contentView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+        WebSettings settings = contentView.getSettings();
+        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+        settings.setJavaScriptEnabled(true);
+        contentView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                Log.i(TAG, consoleMessage.toString());
+                return super.onConsoleMessage(consoleMessage);
+            }
+        });
         contentView.loadData(getTemplateContent().replace("{{CONTENT}}", post.getURLEncodedBody()), "text/html", "UTF-8");
     }
 
