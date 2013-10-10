@@ -40,3 +40,7 @@ proguard/
 *.ipr
 *~
 *.swp
+gradlew.bat
+build.gradle
+
+KyleWBanks/build/
