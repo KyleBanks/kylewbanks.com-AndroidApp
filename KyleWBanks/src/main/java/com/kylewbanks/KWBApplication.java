@@ -3,6 +3,7 @@ package com.kylewbanks;
 import android.app.Application;
 import android.util.Log;
 import com.kylewbanks.activity.PostListInterface;
+import com.kylewbanks.database.DatabaseWrapper;
 import com.kylewbanks.model.Post;
 import com.kylewbanks.network.RESTController;
 import com.kylewbanks.network.response.PostListResponse;
@@ -23,6 +24,7 @@ public class KWBApplication  extends Application {
 
     public void loadPostList() {
         Log.i(TAG, "Loading Post List....");
+        
         RESTController.retrievePostList(new PostListResponse() {
             @Override
             public void success(String json) {
@@ -34,6 +36,11 @@ public class KWBApplication  extends Application {
                 if(_postListInterface != null) {
                     _postListInterface.onPostListLoaded(_postList);
                 }
+
+                DatabaseWrapper wrapper = new DatabaseWrapper(KWBApplication.this);
+                for (Post post : _postList) {
+                    wrapper.insertPost(post);
+                }
             }
         });
     }
@@ -41,7 +48,11 @@ public class KWBApplication  extends Application {
     public void registerPostListInterface(PostListInterface postListInterface) {
         this._postListInterface = postListInterface;
 
+        DatabaseWrapper databaseWrapper = new DatabaseWrapper(this);
+        this._postList = databaseWrapper.getPosts();
+
         if(this._postList != null) {
+            Collections.sort(_postList);
             this._postListInterface.onPostListLoaded(this._postList);
         } else {
             this.loadPostList();
