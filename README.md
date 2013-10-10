@@ -9,6 +9,6 @@ An Android app that loads and displays blog posts from [kylewbanks.com](http://k
 TODO
 ====
 
-- Cache the posts on a client side database
+- Cache tags on the client side (Posts already cached)
 - Only load posts newer than the cached ones
 - Get prettyprint to work from the local file, rather than remote
