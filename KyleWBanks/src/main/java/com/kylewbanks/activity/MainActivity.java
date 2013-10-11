@@ -59,11 +59,6 @@ public class MainActivity extends Activity implements PostListUpdateListener {
         application.registerPostUpdateListener(this);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
     /**
      * Inherited from PostListUpdateListener to be notified when the Post list changes
      * @param posts
