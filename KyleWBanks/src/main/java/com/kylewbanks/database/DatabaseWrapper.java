@@ -21,6 +21,11 @@ public class DatabaseWrapper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    /**
+     * Called if the DATABASE_NAME doesn't exist to create it.
+     *
+     * @param sqLiteDatabase
+     */
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         Log.i(TAG, "Creating database [" + DATABASE_NAME + " v." + DATABASE_VERSION + "]...");
@@ -29,6 +34,13 @@ public class DatabaseWrapper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(TagORM.SQL_CREATE_TABLE);
     }
 
+    /**
+     * Called when the DATABASE_VERSION is increased.
+     *
+     * @param sqLiteDatabase
+     * @param oldVersion
+     * @param newVersion
+     */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         Log.i(TAG, "Upgrading database ["+DATABASE_NAME+" v." + oldVersion+"] to ["+DATABASE_NAME+" v." + newVersion+"]...");

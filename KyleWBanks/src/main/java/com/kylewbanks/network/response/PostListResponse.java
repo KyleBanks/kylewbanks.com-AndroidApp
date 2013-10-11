@@ -17,9 +17,12 @@ public class PostListResponse implements RESTResponse {
 
     protected List<Post> postList;
 
+    /**
+     * Called when the Post List is successfully loaded from the remote server to deserialize it from JSON to Post objects.
+     * @param json
+     */
     @Override
     public void success(String json) {
-        //"02/18/13 09:42 AM
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("M/d/yy hh:mm a");
         Gson gson = gsonBuilder.create();

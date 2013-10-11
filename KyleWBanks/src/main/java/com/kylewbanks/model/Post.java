@@ -47,6 +47,10 @@ public class Post implements Comparable<Post> {
         this._tags = tags;
     }
 
+    /**
+     * Returns the body of the Post in a way that is better handled by WebViews.
+     * @return
+     */
     public String getURLEncodedBody() {
         try {
             return URLEncoder.encode(_body, "UTF-8").replaceAll("\\+", "%20");

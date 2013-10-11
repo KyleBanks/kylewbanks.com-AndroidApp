@@ -18,6 +18,14 @@ public class PostListAdapter extends ArrayAdapter<Post> {
     private LayoutInflater inflater;
     private List<Post> postList;
 
+    /**
+     * Constructs a PostListAdapter with a list of Post objects, that will generate Views for each Post
+     * as required.
+     *
+     * @param context
+     * @param viewResourceId
+     * @param postList
+     */
     public PostListAdapter(Context context, int viewResourceId, List<Post> postList) {
         super(context, viewResourceId, postList);
 
@@ -26,19 +34,27 @@ public class PostListAdapter extends ArrayAdapter<Post> {
         this.postList = postList;
     }
 
+    /**
+     * Loads and populates a View object with the post at the specified position.
+     *
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(position > postList.size()) {
             return null;
         }
 
-        // Don't reuse existing views because the WebView widget doesn't seem to reduce
-        // its size properly once its been used for a longer preview
-        View view = inflater.inflate(viewResourceId, parent, false);
+        if(convertView == null) {
+            convertView = inflater.inflate(viewResourceId, parent, false);
+        }
 
         PostListItem postListItem = new PostListItem(postList.get(position));
-        postListItem.bindToView(view);
+        postListItem.bindToView(convertView);
 
-        return view;
+        return convertView;
     }
 }

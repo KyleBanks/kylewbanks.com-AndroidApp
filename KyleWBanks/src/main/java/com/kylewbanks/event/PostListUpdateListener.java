@@ -9,6 +9,10 @@ import java.util.List;
  */
 public interface PostListUpdateListener {
 
+    /**
+     * Called when the Post list is made available, or has been updated
+     * @param posts
+     */
     void onPostListLoaded(List<Post> posts);
 
 }

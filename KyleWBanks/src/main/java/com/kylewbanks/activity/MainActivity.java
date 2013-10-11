@@ -60,6 +60,10 @@ public class MainActivity extends Activity implements PostListUpdateListener {
     }
 
 
+    /**
+     * Inherited from PostListUpdateListener to be notified when the Post list changes
+     * @param posts
+     */
     @Override
     public void onPostListLoaded(List<Post> posts) {
         this.postList = posts;
@@ -67,6 +71,9 @@ public class MainActivity extends Activity implements PostListUpdateListener {
         runOnUiThread(reloadPostList);
     }
 
+    /**
+     * Triggered when the post list is updated in order to update the UI
+     */
     private Runnable reloadPostList = new Runnable() {
         @Override
         public void run() {
@@ -77,6 +84,9 @@ public class MainActivity extends Activity implements PostListUpdateListener {
         }
     };
 
+    /**
+     * Triggered when a Post is selected from the ListView
+     */
     private ListView.OnItemClickListener postItemSelectedListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {

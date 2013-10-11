@@ -96,6 +96,12 @@ public class TagORM {
         return null;
     }
 
+    /**
+     * Packs a Tag object into a ContentValues map for use with SQL inserts.
+     * @param tag
+     * @param postId
+     * @return
+     */
     private static ContentValues tagToContentValues(Tag tag, long postId) {
         ContentValues values = new ContentValues();
         values.put(TagORM.COLUMN_NAME, tag.getName());
@@ -104,6 +110,11 @@ public class TagORM {
         return values;
     }
 
+    /**
+     * Populates a Tag object with data from a Cursor
+     * @param cursor
+     * @return
+     */
     private static Tag cursorToTag(Cursor cursor) {
         Tag tag = new Tag();
         tag.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));

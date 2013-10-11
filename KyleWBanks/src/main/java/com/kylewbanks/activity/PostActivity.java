@@ -58,12 +58,20 @@ public class PostActivity extends Activity {
         contentView.loadData(getTemplateContent().replace("{{CONTENT}}", post.getURLEncodedBody()), "text/html", "UTF-8");
     }
 
+    /**
+     * Called when the physical 'Back Button' is pressed. Overridden to implement custom animation.
+     */
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
     }
 
+    /**
+     * Called when the navigation 'Back Button' is pressed (header bar). Overridden to implement custom animation.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -76,6 +84,10 @@ public class PostActivity extends Activity {
         }
     }
 
+    /**
+     * Reads in the contents of post_content.html and returns it as a String
+     * @return
+     */
     private String getTemplateContent() {
         AssetManager assetManager = getAssets();
         try {

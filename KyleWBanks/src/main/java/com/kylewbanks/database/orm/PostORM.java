@@ -121,6 +121,11 @@ public class PostORM {
         return false;
     }
 
+    /**
+     * Packs a Post object into a ContentValues map for use with SQL inserts.
+     * @param post
+     * @return
+     */
     private static ContentValues postToContentValues(Post post) {
         ContentValues values = new ContentValues();
         values.put(PostORM.COLUMN_ID, post.getId());
@@ -133,6 +138,11 @@ public class PostORM {
         return values;
     }
 
+    /**
+     * Populates a Post object with data from a Cursor
+     * @param cursor
+     * @return
+     */
     private static Post cursorToPost(Cursor cursor) {
         Post post = new Post();
         post.setId(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
