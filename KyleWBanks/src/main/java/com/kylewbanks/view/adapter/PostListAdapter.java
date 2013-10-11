@@ -4,7 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import com.kylewbanks.R;
 import com.kylewbanks.model.Post;
 
 import java.util.List;
@@ -17,6 +20,9 @@ public class PostListAdapter extends ArrayAdapter<Post> {
     private int viewResourceId;
     private LayoutInflater inflater;
     private List<Post> postList;
+
+    private int lastPosition = -1;
+
 
     /**
      * Constructs a PostListAdapter with a list of Post objects, that will generate Views for each Post
@@ -52,8 +58,13 @@ public class PostListAdapter extends ArrayAdapter<Post> {
             convertView = inflater.inflate(viewResourceId, parent, false);
         }
 
-        PostListItem postListItem = new PostListItem(postList.get(position));
+        Post post = postList.get(position);
+        PostListItem postListItem = new PostListItem(post);
         postListItem.bindToView(convertView);
+
+        Animation animation = AnimationUtils.loadAnimation(getContext(), (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
+        convertView.startAnimation(animation);
+        lastPosition = position;
 
         return convertView;
     }
