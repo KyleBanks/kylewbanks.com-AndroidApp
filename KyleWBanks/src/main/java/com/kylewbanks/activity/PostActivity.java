@@ -52,6 +52,13 @@ public class PostActivity extends Activity {
 
         //Get references to needed UI components
         contentView = (WebView) findViewById(R.id.post_content);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //Enable JavaScript and set the content of the WebView
         WebSettings settings = contentView.getSettings();
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         settings.setJavaScriptEnabled(true);
