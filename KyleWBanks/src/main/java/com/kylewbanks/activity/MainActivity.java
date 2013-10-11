@@ -3,25 +3,21 @@ package com.kylewbanks.activity;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.app.Activity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
 import com.kylewbanks.KWBApplication;
 import com.kylewbanks.R;
+import com.kylewbanks.event.PostListUpdateListener;
 import com.kylewbanks.model.Post;
 import com.kylewbanks.view.adapter.PostListAdapter;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.List;
 
-public class MainActivity extends Activity implements PostListInterface {
+public class MainActivity extends Activity implements PostListUpdateListener {
 
     private static final String TAG = "MainActivity";
 

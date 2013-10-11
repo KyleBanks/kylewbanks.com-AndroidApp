@@ -1,22 +1,32 @@
 package com.kylewbanks.database.orm;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+import com.kylewbanks.database.DatabaseWrapper;
+import com.kylewbanks.model.Post;
 import com.kylewbanks.model.Tag;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kylewbanks on 2013-10-10.
  */
 public class TagORM {
 
-    public static final String TABLE_NAME = "tag";
-    public static final String COMMA_SEP = ", ";
+    private static final String TAG = "TagORM";
 
-    public static final String COLUMN_NAME_TYPE = "TEXT";
-    public static final String COLUMN_NAME = "name";
+    private static final String TABLE_NAME = "tag";
+    private static final String COMMA_SEP = ", ";
 
-    public static final String COLUMN_POST_ID_TYPE = "INTEGER";
-    public static final String COLUMN_POST_ID = "post_id";
+    private static final String COLUMN_NAME_TYPE = "TEXT";
+    private static final String COLUMN_NAME = "name";
+
+    private static final String COLUMN_POST_ID_TYPE = "INTEGER";
+    private static final String COLUMN_POST_ID = "post_id";
 
 
     public static final String SQL_CREATE_TABLE =
@@ -29,11 +39,64 @@ public class TagORM {
             "DROP TABLE IF EXISTS " + TABLE_NAME;
 
 
-    public TagORM() {
+    /**
+     * Inserts a Tag object into the database with an association with the specified Post
+     * @param context
+     * @param tag
+     * @param postId
+     * @return
+     */
+    public static boolean insertTag(Context context, Tag tag, long postId) {
+        ContentValues values = TagORM.tagToContentValues(tag, postId);
 
+        try {
+            DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+            SQLiteDatabase database = databaseWrapper.getWritableDatabase();
+
+            if(database != null) {
+                database.insert(TagORM.TABLE_NAME, "null", values);
+                Log.i(TAG, "Inserted new Tag [" + tag.getName() + "] for Post [" + postId + "]");
+                return true;
+            }
+        } catch (NullPointerException ex) {
+            Log.e(TAG, "Failed to insert Tag[" + tag.getName() + "] due to: " + ex);
+        }
+
+        return false;
     }
 
-    public ContentValues tagToContentValues(Tag tag, long postId) {
+    /**
+     * Gets a list of all cached Tags associated with the specified Post
+     * @param context
+     * @param post
+     * @return
+     */
+    public static final List<Tag> getTagsForPost(Context context, Post post) {
+        DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+        SQLiteDatabase database = databaseWrapper.getReadableDatabase();
+
+        if (database != null) {
+            Cursor cursor = database.rawQuery(
+                    "SELECT * FROM " + TagORM.TABLE_NAME + " WHERE " + TagORM.COLUMN_POST_ID + " = " + post.getId(), null
+            );
+
+            Log.i(TAG, "Loaded " + cursor.getCount() + " Tags for Post["+post.getId()+"]...");
+            if(cursor.getCount() > 0) {
+                List<Tag> tagList = new ArrayList<Tag>();
+
+                cursor.moveToFirst();
+                while (!cursor.isAfterLast()) {
+                    tagList.add(TagORM.cursorToTag(cursor));
+                    cursor.moveToNext();
+                }
+                Log.i(TAG, "Tags loaded successfully for Post["+post.getId()+"]");
+                return tagList;
+            }
+        }
+        return null;
+    }
+
+    private static ContentValues tagToContentValues(Tag tag, long postId) {
         ContentValues values = new ContentValues();
         values.put(TagORM.COLUMN_NAME, tag.getName());
         values.put(TagORM.COLUMN_POST_ID, postId);
@@ -41,7 +104,7 @@ public class TagORM {
         return values;
     }
 
-    public Tag cursorToTag(Cursor cursor) {
+    private static Tag cursorToTag(Cursor cursor) {
         Tag tag = new Tag();
         tag.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
 

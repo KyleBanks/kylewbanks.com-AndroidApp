@@ -1,14 +1,18 @@
 package com.kylewbanks.database.orm;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import com.kylewbanks.database.DatabaseWrapper;
 import com.kylewbanks.model.Post;
+import com.kylewbanks.model.Tag;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -18,27 +22,27 @@ public class PostORM {
 
     private static final String TAG = "PostORM";
 
-    public static final String TABLE_NAME = "post";
+    private static final String TABLE_NAME = "post";
 
-    public static final String COMMA_SEP = ", ";
+    private static final String COMMA_SEP = ", ";
 
-    public static final String COLUMN_ID_TYPE = "INTEGER PRIMARY KEY";
-    public static final String COLUMN_ID = "id";
+    private static final String COLUMN_ID_TYPE = "INTEGER PRIMARY KEY";
+    private static final String COLUMN_ID = "id";
 
-    public static final String COLUMN_TITLE_TYPE = "TEXT";
-    public static final String COLUMN_TITLE = "title";
+    private static final String COLUMN_TITLE_TYPE = "TEXT";
+    private static final String COLUMN_TITLE = "title";
 
-    public static final String COLUMN_PREVIEW_TYPE = "TEXT";
-    public static final String COLUMN_PREVIEW = "preview";
+    private static final String COLUMN_PREVIEW_TYPE = "TEXT";
+    private static final String COLUMN_PREVIEW = "preview";
 
-    public static final String COLUMN_BODY_TYPE = "TEXT";
-    public static final String COLUMN_BODY = "body";
+    private static final String COLUMN_BODY_TYPE = "TEXT";
+    private static final String COLUMN_BODY = "body";
 
-    public static final String COLUMN_URL_TYPE = "TEXT";
-    public static final String COLUMN_URL = "url";
+    private static final String COLUMN_URL_TYPE = "TEXT";
+    private static final String COLUMN_URL = "url";
 
-    public static final String COLUMN_DATE_TYPE = "TEXT";
-    public static final String COLUMN_DATE = "pubdate";
+    private static final String COLUMN_DATE_TYPE = "TEXT";
+    private static final String COLUMN_DATE = "pubdate";
 
 
     public static final String SQL_CREATE_TABLE =
@@ -54,13 +58,70 @@ public class PostORM {
     public static final String SQL_DROP_TABLE =
             "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-    private SimpleDateFormat _dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+    private static final SimpleDateFormat _dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
 
-    public PostORM() {
+    /**
+     * Fetches the full list of Posts stored in the local Database
+     * @param context
+     * @return
+     */
+    public static List<Post> getPosts(Context context) {
+        DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+        SQLiteDatabase database = databaseWrapper.getReadableDatabase();
 
+        if(database != null) {
+            Cursor cursor = database.rawQuery("SELECT * FROM " + PostORM.TABLE_NAME, null);
+
+            Log.i(TAG, "Loaded " + cursor.getCount() + " Posts...");
+            if(cursor.getCount() > 0) {
+                List<Post> postList = new ArrayList<Post>();
+
+                cursor.moveToFirst();
+                while (!cursor.isAfterLast()) {
+                    Post post = cursorToPost(cursor);
+                    post.setTags(TagORM.getTagsForPost(context, post));
+
+                    postList.add(post);
+                    cursor.moveToNext();
+                }
+                Log.i(TAG, "Posts loaded successfully.");
+                return postList;
+            }
+        }
+
+        return null;
     }
 
-    public ContentValues postToContentValues(Post post) {
+    /**
+     * Inserts a Post object into the local database
+     * @param context
+     * @param post
+     * @return
+     */
+    public static boolean insertPost(Context context, Post post) {
+        ContentValues values = postToContentValues(post);
+
+        try {
+            DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+            SQLiteDatabase database = databaseWrapper.getWritableDatabase();
+
+            if (database != null) {
+                long postId = database.insert(PostORM.TABLE_NAME, "null", values);
+                Log.i(TAG, "Inserted new Post with ID: " + postId);
+
+                for (Tag tag : post.getTags()) {
+                    TagORM.insertTag(context, tag, post.getId());
+                }
+                return true;
+            }
+        } catch (NullPointerException ex) {
+            Log.e(TAG, "Failed to insert Post[" + post.getId() + "] due to: " + ex);
+        }
+
+        return false;
+    }
+
+    private static ContentValues postToContentValues(Post post) {
         ContentValues values = new ContentValues();
         values.put(PostORM.COLUMN_ID, post.getId());
         values.put(PostORM.COLUMN_TITLE, post.getTitle());
@@ -72,7 +133,7 @@ public class PostORM {
         return values;
     }
 
-    public Post cursorToPost(Cursor cursor) {
+    private static Post cursorToPost(Cursor cursor) {
         Post post = new Post();
         post.setId(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
         post.setTitle(cursor.getString(cursor.getColumnIndex(COLUMN_TITLE)));

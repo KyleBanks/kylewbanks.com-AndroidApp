@@ -2,14 +2,13 @@ package com.kylewbanks;
 
 import android.app.Application;
 import android.util.Log;
-import com.kylewbanks.activity.PostListInterface;
-import com.kylewbanks.database.DatabaseWrapper;
+import com.kylewbanks.event.PostListUpdateListener;
+import com.kylewbanks.database.orm.PostORM;
 import com.kylewbanks.model.Post;
 import com.kylewbanks.network.RESTController;
 import com.kylewbanks.network.response.PostListResponse;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -20,45 +19,30 @@ public class KWBApplication  extends Application {
     private static final String TAG = "KWBApplication";
 
     private List<Post> _postList;
-    private PostListInterface _postListInterface;
+    private PostListUpdateListener _postListUpdateListener;
 
-    public void loadPostList() {
-        Log.i(TAG, "Loading Post List....");
+    /**
+     * Register a listener for when the Post list becomes available, or is updated
+     * @param postListUpdateListener
+     */
+    public void registerPostListInterface(PostListUpdateListener postListUpdateListener) {
+        this._postListUpdateListener = postListUpdateListener;
 
-        RESTController.retrievePostList(new PostListResponse() {
-            @Override
-            public void success(String json) {
-                super.success(json);
-                _postList = postList;
-
-                Collections.sort(_postList);
-
-                if(_postListInterface != null) {
-                    _postListInterface.onPostListLoaded(_postList);
-                }
-
-                DatabaseWrapper wrapper = new DatabaseWrapper(KWBApplication.this);
-                for (Post post : _postList) {
-                    wrapper.insertPost(post);
-                }
-            }
-        });
-    }
-
-    public void registerPostListInterface(PostListInterface postListInterface) {
-        this._postListInterface = postListInterface;
-
-        DatabaseWrapper databaseWrapper = new DatabaseWrapper(this);
-        this._postList = databaseWrapper.getPosts();
+        this._postList = PostORM.getPosts(this);
 
         if(this._postList != null) {
             Collections.sort(_postList);
-            this._postListInterface.onPostListLoaded(this._postList);
+            this._postListUpdateListener.onPostListLoaded(this._postList);
         } else {
             this.loadPostList();
         }
     }
 
+    /**
+     * Returns a Post object identified by the specified id, if available
+     * @param id
+     * @return
+     */
     public Post getPostById(long id) {
         for (Post post : _postList) {
             if (post.getId() == id) {
@@ -68,4 +52,33 @@ public class KWBApplication  extends Application {
 
         return null;
     }
+
+    /**
+     * Fetches the list of Posts from the remove server
+     */
+    private void loadPostList() {
+        Log.i(TAG, "Loading Post List....");
+
+        RESTController.retrievePostList(postListResponse);
+    }
+
+    /**
+     * Handler for the Post list being fetched remotely
+     */
+    private PostListResponse postListResponse = new PostListResponse() {
+        @Override
+        public void success(String json) {
+            super.success(json);
+            _postList = postList;
+            Collections.sort(_postList);
+
+            if(_postListUpdateListener != null) {
+                _postListUpdateListener.onPostListLoaded(_postList);
+            }
+
+            for (Post post : _postList) {
+                PostORM.insertPost(KWBApplication.this, post);
+            }
+        }
+    };
 }

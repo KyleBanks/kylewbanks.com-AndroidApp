@@ -27,6 +27,7 @@
             android:id="@+id/post_item_preview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"/>
+            android:layout_marginTop="2dp"
+            android:textColor="#555555"/>
     </LinearLayout>
 </LinearLayout>
