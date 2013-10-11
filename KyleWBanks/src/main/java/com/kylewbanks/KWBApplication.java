@@ -25,7 +25,7 @@ public class KWBApplication  extends Application {
      * Register a listener for when the Post list becomes available, or is updated
      * @param postListUpdateListener
      */
-    public void registerPostListInterface(PostListUpdateListener postListUpdateListener) {
+    public void registerPostListUpdateListener(PostListUpdateListener postListUpdateListener) {
         this._postListUpdateListener = postListUpdateListener;
 
         this._postList = PostORM.getPosts(this);
