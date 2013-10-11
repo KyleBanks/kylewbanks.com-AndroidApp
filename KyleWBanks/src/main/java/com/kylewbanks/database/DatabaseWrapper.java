@@ -14,7 +14,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper {
 
     private static final String TAG = "DatabaseWrapper";
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "KWB.db";
 
     public DatabaseWrapper(Context context) {
@@ -32,6 +32,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL(PostORM.SQL_CREATE_TABLE);
         sqLiteDatabase.execSQL(TagORM.SQL_CREATE_TABLE);
+        sqLiteDatabase.close();
     }
 
     /**

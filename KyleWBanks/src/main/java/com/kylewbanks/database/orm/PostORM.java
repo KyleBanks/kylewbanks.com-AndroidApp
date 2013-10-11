@@ -69,13 +69,14 @@ public class PostORM {
         DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
         SQLiteDatabase database = databaseWrapper.getReadableDatabase();
 
+        List<Post> postList = null;
+
         if(database != null) {
             Cursor cursor = database.rawQuery("SELECT * FROM " + PostORM.TABLE_NAME, null);
 
             Log.i(TAG, "Loaded " + cursor.getCount() + " Posts...");
             if(cursor.getCount() > 0) {
-                List<Post> postList = new ArrayList<Post>();
-
+                postList = new ArrayList<Post>();
                 cursor.moveToFirst();
                 while (!cursor.isAfterLast()) {
                     Post post = cursorToPost(cursor);
@@ -85,11 +86,40 @@ public class PostORM {
                     cursor.moveToNext();
                 }
                 Log.i(TAG, "Posts loaded successfully.");
-                return postList;
             }
+
+            database.close();
         }
 
-        return null;
+        return postList;
+    }
+
+    /**
+     * Fetches a single Post identified by the specified ID
+     * @param context
+     * @param postId
+     * @return
+     */
+    public static Post findPostById(Context context, long postId) {
+        DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+        SQLiteDatabase database = databaseWrapper.getReadableDatabase();
+
+        Post post = null;
+        if(database != null) {
+            Log.i(TAG, "Loading Post["+postId+"]...");
+            Cursor cursor = database.rawQuery("SELECT * FROM " + PostORM.TABLE_NAME + " WHERE " + PostORM.COLUMN_ID + " = " + postId, null);
+
+            if(cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                post = cursorToPost(cursor);
+                post.setTags(TagORM.getTagsForPost(context, post));
+                Log.i(TAG, "Post loaded successfully!");
+            }
+
+            database.close();
+        }
+
+        return post;
     }
 
     /**
@@ -101,10 +131,11 @@ public class PostORM {
     public static boolean insertPost(Context context, Post post) {
         ContentValues values = postToContentValues(post);
 
-        try {
-            DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
-            SQLiteDatabase database = databaseWrapper.getWritableDatabase();
+        DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+        SQLiteDatabase database = databaseWrapper.getWritableDatabase();
 
+        boolean success = false;
+        try {
             if (database != null) {
                 long postId = database.insert(PostORM.TABLE_NAME, "null", values);
                 Log.i(TAG, "Inserted new Post with ID: " + postId);
@@ -112,13 +143,17 @@ public class PostORM {
                 for (Tag tag : post.getTags()) {
                     TagORM.insertTag(context, tag, post.getId());
                 }
-                return true;
+                success = true;
             }
         } catch (NullPointerException ex) {
             Log.e(TAG, "Failed to insert Post[" + post.getId() + "] due to: " + ex);
+        } finally {
+            if(database != null) {
+                database.close();
+            }
         }
 
-        return false;
+        return success;
     }
 
     /**

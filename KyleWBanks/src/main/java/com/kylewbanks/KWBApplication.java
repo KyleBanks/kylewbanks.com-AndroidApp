@@ -9,6 +9,7 @@ import com.kylewbanks.network.RESTController;
 import com.kylewbanks.network.response.PostListResponse;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,8 +19,10 @@ public class KWBApplication  extends Application {
 
     private static final String TAG = "KWBApplication";
 
-    private List<Post> _postList;
     private PostListUpdateListener _postListUpdateListener;
+
+    private Date _lastLoadedPostList;
+    private static final int LOAD_POST_LIST_INTERVAL = 1000 * 60 * 10; //10 minutes
 
     /**
      * Register a listener for when the Post list becomes available, or is updated
@@ -28,29 +31,25 @@ public class KWBApplication  extends Application {
     public void registerPostUpdateListener(PostListUpdateListener postListUpdateListener) {
         this._postListUpdateListener = postListUpdateListener;
 
-        this._postList = PostORM.getPosts(this);
+        List<Post> posts = PostORM.getPosts(this);
 
-        if(this._postList != null) {
-            Collections.sort(_postList);
-            this._postListUpdateListener.onPostListLoaded(this._postList);
-        } else {
+        if(posts != null) {
+            Collections.sort(posts);
+            this._postListUpdateListener.onPostListLoaded(posts);
+        }
+
+        if(_lastLoadedPostList == null || new Date().getTime() - _lastLoadedPostList.getTime() > LOAD_POST_LIST_INTERVAL) {
             this.loadPostList();
         }
     }
 
     /**
      * Returns a Post object identified by the specified id, if available
-     * @param id
+     * @param postId
      * @return
      */
-    public Post getPostById(long id) {
-        for (Post post : _postList) {
-            if (post.getId() == id) {
-                return post;
-            }
-        }
-
-        return null;
+    public Post getPostById(long postId) {
+        return PostORM.findPostById(this, postId);
     }
 
     /**
@@ -59,7 +58,7 @@ public class KWBApplication  extends Application {
     private void loadPostList() {
         Log.i(TAG, "Loading Post List....");
 
-        RESTController.retrievePostList(postListResponse);
+        RESTController.retrievePostList(postListResponse, new long[0]);
     }
 
     /**
@@ -69,16 +68,17 @@ public class KWBApplication  extends Application {
         @Override
         public void success(String json) {
             super.success(json);
-            _postList = postList;
-            Collections.sort(_postList);
+            Collections.sort(postList);
 
             if(_postListUpdateListener != null) {
-                _postListUpdateListener.onPostListLoaded(_postList);
+                _postListUpdateListener.onPostListLoaded(postList);
             }
 
-            for (Post post : _postList) {
+            for (Post post : postList) {
                 PostORM.insertPost(KWBApplication.this, post);
             }
+
+            _lastLoadedPostList = new Date();
         }
     };
 }

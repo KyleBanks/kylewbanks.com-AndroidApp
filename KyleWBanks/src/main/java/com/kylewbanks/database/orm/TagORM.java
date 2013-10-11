@@ -48,21 +48,25 @@ public class TagORM {
      */
     public static boolean insertTag(Context context, Tag tag, long postId) {
         ContentValues values = TagORM.tagToContentValues(tag, postId);
+        DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+        SQLiteDatabase database = databaseWrapper.getWritableDatabase();
 
+        boolean success = false;
         try {
-            DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
-            SQLiteDatabase database = databaseWrapper.getWritableDatabase();
-
             if(database != null) {
                 database.insert(TagORM.TABLE_NAME, "null", values);
                 Log.i(TAG, "Inserted new Tag [" + tag.getName() + "] for Post [" + postId + "]");
-                return true;
+                success = true;
             }
         } catch (NullPointerException ex) {
             Log.e(TAG, "Failed to insert Tag[" + tag.getName() + "] due to: " + ex);
+        } finally {
+            if (database != null) {
+                database.close();
+            }
         }
 
-        return false;
+        return success;
     }
 
     /**
@@ -75,6 +79,8 @@ public class TagORM {
         DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
         SQLiteDatabase database = databaseWrapper.getReadableDatabase();
 
+        List<Tag> tagList = null;
+
         if (database != null) {
             Cursor cursor = database.rawQuery(
                     "SELECT * FROM " + TagORM.TABLE_NAME + " WHERE " + TagORM.COLUMN_POST_ID + " = " + post.getId(), null
@@ -82,7 +88,7 @@ public class TagORM {
 
             Log.i(TAG, "Loaded " + cursor.getCount() + " Tags for Post["+post.getId()+"]...");
             if(cursor.getCount() > 0) {
-                List<Tag> tagList = new ArrayList<Tag>();
+                tagList = new ArrayList<Tag>();
 
                 cursor.moveToFirst();
                 while (!cursor.isAfterLast()) {
@@ -90,10 +96,11 @@ public class TagORM {
                     cursor.moveToNext();
                 }
                 Log.i(TAG, "Tags loaded successfully for Post["+post.getId()+"]");
-                return tagList;
             }
+
+            database.close();
         }
-        return null;
+        return tagList;
     }
 
     /**

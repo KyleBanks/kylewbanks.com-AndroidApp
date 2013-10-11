@@ -13,6 +13,7 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,16 +31,21 @@ public class RESTController {
      * Fetches a list of Posts from the remote server.
      * @param response
      */
-    public static void retrievePostList(PostListResponse response) {
+    public static void retrievePostList(PostListResponse response, long[] knownPostIds) {
+        Log.i(TAG, "Loading Post List...");
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("knownPostIds", Arrays.toString(knownPostIds));
+
         RESTPerformer restPerformer = new RESTPerformer();
-        restPerformer.execute(getPackedParameters("/postList", null, response));
+        restPerformer.execute(getPackedParameters("/postList", params, response));
     }
 
     /**
      * Bundles any additional parameters you want to pass to the server with the authentication parameters.
      * Also adds the required RESTResponse callback class, and server URL to the dictionary.
      */
-    private static HashMap<String, Object> getPackedParameters(String serverURL, HashMap<String, Object> additionalParams, RESTResponse response) {
+    private static HashMap<String, Object> getPackedParameters(String serverURL, Map<String, Object> additionalParams, RESTResponse response) {
         HashMap<String, Object> packedParams = new HashMap<String, Object>();
 
         if(!serverURL.startsWith("/")) {
