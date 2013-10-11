@@ -53,15 +53,15 @@ public class MainActivity extends Activity implements PostListUpdateListener {
         postListView.setOnItemClickListener(postItemSelectedListener);
 
         progressBar = (ProgressBar) findViewById(R.id.loader);
+
+        //Register as a Post List update listener
+        KWBApplication application = (KWBApplication) getApplication();
+        application.registerPostUpdateListener(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        //Register as a Post List update listener
-        KWBApplication application = (KWBApplication) getApplication();
-        application.registerPostListUpdateListener(this);
     }
 
     /**

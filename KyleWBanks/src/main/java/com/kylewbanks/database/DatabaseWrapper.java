@@ -22,7 +22,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper {
     }
 
     /**
-     * Called if the DATABASE_NAME doesn't exist to create it.
+     * Called if the database named DATABASE_NAME doesn't exist in order to create it.
      *
      * @param sqLiteDatabase
      */
