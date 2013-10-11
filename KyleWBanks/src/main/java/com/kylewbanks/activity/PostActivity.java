@@ -62,7 +62,7 @@ public class PostActivity extends Activity {
         WebSettings settings = contentView.getSettings();
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         settings.setJavaScriptEnabled(true);
-        contentView.loadData(getTemplateContent().replace("{{CONTENT}}", post.getURLEncodedBody()), "text/html", "UTF-8");
+        contentView.loadDataWithBaseURL("", getTemplateContent().replace("{{CONTENT}}", post.getBody()), "text/html", "UTF-8", "");
     }
 
     /**

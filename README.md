@@ -10,4 +10,4 @@ TODO
 ====
 
 - Only load posts newer than the cached ones
-- Get prettyprint to work from the local file, rather than remote
+
