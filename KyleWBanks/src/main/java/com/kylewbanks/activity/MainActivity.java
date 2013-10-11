@@ -59,6 +59,15 @@ public class MainActivity extends Activity implements PostListUpdateListener {
         application.registerPostUpdateListener(this);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //Check for any updated Posts
+        KWBApplication application = (KWBApplication) getApplication();
+        application.checkForUpdates();
+    }
+
     /**
      * Inherited from PostListUpdateListener to be notified when the Post list changes
      * @param posts

@@ -30,16 +30,21 @@ public class KWBApplication  extends Application {
      */
     public void registerPostUpdateListener(PostListUpdateListener postListUpdateListener) {
         this._postListUpdateListener = postListUpdateListener;
+    }
 
-        List<Post> posts = PostORM.getPosts(this);
-
-        if(posts != null) {
-            Collections.sort(posts);
-            this._postListUpdateListener.onPostListLoaded(posts);
-        }
-
+    /**
+     * Refreshes the Posts from the database, and polls the remote server if enough time has passed
+     */
+    public void checkForUpdates() {
         if(_lastLoadedPostList == null || new Date().getTime() - _lastLoadedPostList.getTime() > LOAD_POST_LIST_INTERVAL) {
             this.loadPostList();
+        } else {
+            List<Post> posts = PostORM.getPosts(this);
+
+            if(posts != null) {
+                Collections.sort(posts);
+                this._postListUpdateListener.onPostListLoaded(posts);
+            }
         }
     }
 

@@ -129,6 +129,11 @@ public class PostORM {
      * @return
      */
     public static boolean insertPost(Context context, Post post) {
+        if(findPostById(context, post.getId()) != null) {
+            Log.i(TAG, "Post already exists in database, not inserting!");
+            return updatePost(context, post);
+        }
+
         ContentValues values = postToContentValues(post);
 
         DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
@@ -147,6 +152,29 @@ public class PostORM {
             }
         } catch (NullPointerException ex) {
             Log.e(TAG, "Failed to insert Post[" + post.getId() + "] due to: " + ex);
+        } finally {
+            if(database != null) {
+                database.close();
+            }
+        }
+
+        return success;
+    }
+
+    public static boolean updatePost(Context context, Post post) {
+        ContentValues values = postToContentValues(post);
+        DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+        SQLiteDatabase database = databaseWrapper.getWritableDatabase();
+
+        boolean success = false;
+        try {
+            if (database != null) {
+                Log.i(TAG, "Updating Post[" + post.getId() + "]...");
+                database.update(PostORM.TABLE_NAME, values, PostORM.COLUMN_ID + " = " + post.getId(), null);
+                success = true;
+            }
+        } catch (NullPointerException ex) {
+            Log.e(TAG, "Failed to update Post[" + post.getId() + "] due to: " + ex);
         } finally {
             if(database != null) {
                 database.close();
