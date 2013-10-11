@@ -58,7 +58,7 @@ public class PostORM {
     public static final String SQL_DROP_TABLE =
             "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-    private static final SimpleDateFormat _dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+    private static final SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ", Locale.ENGLISH);
 
     /**
      * Fetches the full list of Posts stored in the local Database
