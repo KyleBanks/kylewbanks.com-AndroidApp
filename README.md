@@ -5,3 +5,9 @@ A blog reader app that displays posts from [kylewbanks.com](http://kylewbanks.co
 
 ![App Screenshots](https://s3.amazonaws.com/kylewbanks/app_screenshots.png "App Screenshots")
 
+
+Dependencies
+============
+
+- [KyleBanks/AnimatedListView](https://github.com/KyleBanks/kylewbanks.com-AndroidApp)
+
