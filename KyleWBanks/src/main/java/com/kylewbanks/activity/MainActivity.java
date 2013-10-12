@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.app.Activity;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +55,7 @@ public class MainActivity extends Activity implements PostListUpdateListener {
         //Initialize Views
         postListView = (AnimatedListView) findViewById(R.id.post_list);
         postListView.setOnItemClickListener(postItemSelectedListener);
+
 
         progressBar = (ProgressBar) findViewById(R.id.loader);
 
@@ -107,7 +109,7 @@ public class MainActivity extends Activity implements PostListUpdateListener {
             txtTitle.setText(post.getTitle());
 
             TextView txtPreview = (TextView) view.findViewById(R.id.post_item_preview);
-            txtPreview.setText(post.getPreview());
+            txtPreview.setText(Html.fromHtml(post.getPreview()));
         }
     };
 
