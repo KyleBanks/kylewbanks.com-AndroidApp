@@ -7,7 +7,7 @@ A blog reader app that displays posts from [kylewbanks.com](http://kylewbanks.co
 Dependencies
 ============
 
-- [KyleBanks/AnimatedListView](https://github.com/KyleBanks/kylewbanks.com-AndroidApp)
+- [KyleBanks/AnimatedListView](https://github.com/KyleBanks/AnimatedListView)
 
 
 Screenshots
