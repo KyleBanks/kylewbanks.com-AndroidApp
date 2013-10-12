@@ -83,7 +83,7 @@ public class TagORM {
 
         if (database != null) {
             Cursor cursor = database.rawQuery(
-                    "SELECT * FROM " + TagORM.TABLE_NAME + " WHERE " + TagORM.COLUMN_POST_ID + " = " + post.getId(), null
+                    "SELECT * FROM " + TagORM.TABLE_NAME + " WHERE " + TagORM.COLUMN_POST_ID + " = " + post.getId() + " GROUP BY " + TagORM.COLUMN_NAME, null
             );
 
             Log.i(TAG, "Loaded " + cursor.getCount() + " Tags for Post["+post.getId()+"]...");

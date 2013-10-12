@@ -108,6 +108,9 @@ public class MainActivity extends Activity implements PostListUpdateListener {
             TextView txtTitle = (TextView) view.findViewById(R.id.post_item_title);
             txtTitle.setText(post.getTitle());
 
+            TextView txtTagList = (TextView) view.findViewById(R.id.post_item_tags);
+            txtTagList.setText(post.getTagString());
+
             TextView txtPreview = (TextView) view.findViewById(R.id.post_item_preview);
             txtPreview.setText(Html.fromHtml(post.getPreview()));
         }

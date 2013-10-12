@@ -117,6 +117,21 @@ public class Post implements Comparable<Post> {
         this._tags = tags;
     }
 
+    public String getTagString() {
+        StringBuilder output = new StringBuilder();
+        output.append("Filed under ");
+
+        for (int i = 0; i < _tags.size(); i++) {
+            output.append(_tags.get(i).getName());
+            if(i < _tags.size()-1) {
+                output.append(", ");
+            }
+        }
+        output.append(".");
+
+        return output.toString();
+    }
+
     @Override
     public int compareTo(Post post) {
         return post.getDate().compareTo(_date);
