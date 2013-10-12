@@ -95,10 +95,19 @@ public class MainActivity extends Activity implements PostListUpdateListener {
         }
     };
 
+    /**
+     * Called to bind a Post object to a View for the AnimatedListView
+     */
     private AnimatedListViewObjectMapper objectMapper = new AnimatedListViewObjectMapper() {
         @Override
         public void bindObjectToView(Object object, View view) {
-            Log.e(TAG, "NOT YET IMPLEMENTED!");
+            Post post = (Post) object;
+
+            TextView txtTitle = (TextView) view.findViewById(R.id.post_item_title);
+            txtTitle.setText(post.getTitle());
+
+            TextView txtPreview = (TextView) view.findViewById(R.id.post_item_preview);
+            txtPreview.setText(post.getPreview());
         }
     };
 

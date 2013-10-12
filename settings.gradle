@@ -1,1 +1,1 @@
-include ':AnimatedListView', ':KyleWBanks'
+include ':KyleWBanks', ':AnimatedListView'

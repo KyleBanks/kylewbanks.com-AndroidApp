@@ -12,6 +12,7 @@ dependencies {
     compile files('libs/android-support-v4.jar')
     compile files('libs/gson-2.2.2.jar')
     compile files('libs/httpmime-4.2.3.jar')
+    compile project(':AnimatedListView')
 }
 
 android {

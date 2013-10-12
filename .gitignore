@@ -42,3 +42,5 @@ proguard/
 *.swp
 
 KyleWBanks/build/
+
+AnimatedListView/
