@@ -6,14 +6,17 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
 import com.kylewbanks.KWBApplication;
 import com.kylewbanks.R;
+import com.kylewbanks.animlv.AnimatedListView;
+import com.kylewbanks.animlv.AnimatedListViewAdapter;
+import com.kylewbanks.animlv.AnimatedListViewObjectMapper;
 import com.kylewbanks.event.PostListUpdateListener;
 import com.kylewbanks.model.Post;
-import com.kylewbanks.view.adapter.PostListAdapter;
 
 import java.util.List;
 
@@ -23,7 +26,7 @@ public class MainActivity extends Activity implements PostListUpdateListener {
 
     private List<Post> postList;
 
-    private ListView postListView;
+    private AnimatedListView postListView;
     private ProgressBar progressBar;
 
     @Override
@@ -49,7 +52,7 @@ public class MainActivity extends Activity implements PostListUpdateListener {
         }
 
         //Initialize Views
-        postListView = (ListView) findViewById(R.id.post_list);
+        postListView = (AnimatedListView) findViewById(R.id.post_list);
         postListView.setOnItemClickListener(postItemSelectedListener);
 
         progressBar = (ProgressBar) findViewById(R.id.loader);
@@ -85,10 +88,17 @@ public class MainActivity extends Activity implements PostListUpdateListener {
     private Runnable reloadPostList = new Runnable() {
         @Override
         public void run() {
-            PostListAdapter postListAdapter = new PostListAdapter(MainActivity.this, R.layout.post_list_item, postList);
+            AnimatedListViewAdapter postListAdapter = new AnimatedListViewAdapter(MainActivity.this, R.layout.post_list_item, postList, objectMapper);
             postListView.setAdapter(postListAdapter);
 
             progressBar.setVisibility(View.GONE);
+        }
+    };
+
+    private AnimatedListViewObjectMapper objectMapper = new AnimatedListViewObjectMapper() {
+        @Override
+        public void bindObjectToView(Object object, View view) {
+            Log.e(TAG, "NOT YET IMPLEMENTED!");
         }
     };
 

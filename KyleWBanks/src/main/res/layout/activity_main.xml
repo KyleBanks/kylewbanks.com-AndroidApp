@@ -13,11 +13,10 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"/>
 
-    <ListView
+    <com.kylewbanks.animlv.AnimatedListView
         android:id="@+id/post_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none">
-    </ListView>
+        android:scrollbars="none" />
 
 </RelativeLayout>
