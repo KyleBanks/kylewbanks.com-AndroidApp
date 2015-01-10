@@ -32,7 +32,6 @@ public class DatabaseWrapper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL(PostORM.SQL_CREATE_TABLE);
         sqLiteDatabase.execSQL(TagORM.SQL_CREATE_TABLE);
-        sqLiteDatabase.close();
     }
 
     /**
