@@ -118,6 +118,10 @@ public class Post implements Comparable<Post> {
     }
 
     public String getTagString() {
+        if (_tags == null || _tags.size() == 0) {
+            return "";
+        }
+        
         StringBuilder output = new StringBuilder();
         output.append("Filed under ");
 
