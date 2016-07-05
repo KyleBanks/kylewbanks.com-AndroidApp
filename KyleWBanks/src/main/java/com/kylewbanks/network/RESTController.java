@@ -24,7 +24,7 @@ public class RESTController {
 
     private static final String TAG = "RESTController";
 
-    private static final String REST_URL = "http://kylewbanks.com/rest";
+    private static final String REST_URL = "http://kylewbanks.com/rest.json";
 
 
     /**
